@@ -8,10 +8,10 @@
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     </head>
     <header>
-        <a href="../resources/views/info.blade.php">Страница с информацией о проекте</a>
-        <a href="../resources/views/news.blade.php">Страница новостей</a>
+        <a href="../../public/index.php">Страница приветствия</a>
+        <a href="news.blade.php">Страница новостей</a>
     </header>
     <body>
-       <h3>Добро пожаловать на страницу приветствия</h3>
+       <h3>Некоторая информация о проекте</h3>
     </body>
 </html>
