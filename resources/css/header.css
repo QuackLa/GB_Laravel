@@ -1,0 +1,17 @@
+header {
+    border: 1px solid #a1d8ff;
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
+header a{
+    width: 15%;
+    margin-left: 5%;
+    text-decoration: none;
+    color: purple;
+}
+
+header a:hover{
+    border-bottom: 1px solid black;
+    color: #a1d8ff;
+}
