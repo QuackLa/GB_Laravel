@@ -20,7 +20,6 @@ Route::get('/', function() {
 })->name('main');
 
 
-
 Route::get('/CatNews', [NewsController::class, 'CatNews']);
 Route::get('/NewsByCat', [NewsController::class, 'NewsByCat']);
 Route::get('/OneNews/{id?}', [NewsController::class, 'OneNews']);
