@@ -1,0 +1,19 @@
+/* Шапка */
+@import "header.css";
+/* Подвал */
+@import "footer.css";
+
+body {
+    background: #ecf7d2;
+    width: 80%;
+    margin-top: 1%;
+    margin-left: 10%;
+    margin-bottom: 1%;
+}
+
+.container {
+    margin-top: 1%;
+    min-height: 500px;
+    margin-bottom: 1%;
+    padding-left: 2%;
+}

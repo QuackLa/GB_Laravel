@@ -34,3 +34,4 @@ Route::get('/OneNews/{id?}', [NewsController::class, 'OneNews'])
 
 Route::get('/welcome', [Controller::class, 'welcome'])
     ->name('welcome');
+
