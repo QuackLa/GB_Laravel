@@ -3,26 +3,18 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        @hasSection('head')
-            @yield('head')
-        @else
-            <link rel="stylesheet" href="../resources/css/main.css">
-        @endif
+        <link rel="stylesheet" href="{{ asset('css') }}/main.css">
         <title>Страница приветствия</title>
     </head>
 
-    @hasSection('header')
-        @yield('header')
-    @else
-        @include('header')
-    @endif
+    <div class="container">
+    @include('header')
 
     <body>
-        <div class="container">
-            @yield('content')
-        </div>
+        @yield('content')
     </body>
 
     @include('footer')
-
+    </div>
+    
 </html>
