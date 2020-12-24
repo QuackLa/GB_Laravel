@@ -1,0 +1,30 @@
+/* Шапка */
+@import "header.css";
+/* Регистрация и авторизация */
+@import "RegAndAuth.css";
+/* Личный кабинет */
+@import "LC.css";
+/* Подвал */
+@import "footer.css";
+
+body {
+    width: 80%;
+    margin-top: 1%;
+    margin-left: 10%;
+    margin-bottom: 1%;
+}
+
+.container {
+    background: #ecf7d2;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    box-shadow: 0 0 10px black;
+    border-radius: 10px;
+    border: none;
+}
+
+.content {
+    padding-left: 4%;
+    min-height: 500px;
+    margin-top: 2%;
+}
