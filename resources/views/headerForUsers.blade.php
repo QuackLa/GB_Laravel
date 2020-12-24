@@ -4,5 +4,6 @@
     <a href="{{ route('NewsByCat') }}">Выбрать категорию</a>
     <a href="{{ route('OneNews', ['id' => '']) }}">Конкретная новость</a>
     <br><br>
-    <a href="{{ route('EnterUser') }}">Войти</a>
+    <a href="{{ route('LC') }}">Личный кабинет</a>
+    <a href="{{ route('Logout') }}">Выйти</a>
 </header>

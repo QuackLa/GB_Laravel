@@ -7,14 +7,18 @@
         <title>Страница приветствия</title>
     </head>
 
-    <div class="container">
-    @include('header')
+    <div class='container'>
+    @if(session('user'))
+        @include('headerForUsers')
+    @else
+        @include('header')
+    @endif
 
-    <body>
-        @yield('content')
-    </body>
+        <body>
+            @yield('content')
+        </body>
 
-    @include('footer')
+        @include('footer')
     </div>
-    
+
 </html>

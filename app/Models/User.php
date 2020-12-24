@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -40,4 +41,78 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    
+    /**
+     * Логика регистрации пользователя
+     * С проверкой, на существование вводимого логина
+     */
+    function registrNewUser($login, $pass, $name, $surname, $email)
+    {
+        if(!$login or !$pass or !$name or !$surname or !$email)
+        {
+            return "Заполните все поля!";
+        }
+        else 
+        {
+            if($login)
+            {
+                $select = DB::select('SELECT * FROM test WHERE login = ?', [$login]);
+    
+                if(empty($select))
+                {
+                    $add = DB::insert('INSERT INTO `test` (`login`, `password`, `name`, `surname`, `email`) 
+                    values (:login, :password, :name, :surname, :email)',
+                    ['login' => $login, 'password' => $pass, 'name' => $name, 'surname' => $surname, 'email' => $email]);
+                    session(['user' => $login]);
+    
+                    return "Вы успешно вошли, $login. Добро пожаловать!";
+                }
+                else 
+                {
+                    return 'Такой пользователь уже существует';
+                }
+            }    
+        }
+    }
+
+    /**
+     * Авторизация пользователя. Проверка логина и пароля по БД
+     */
+    function Auth($login, $pass)
+    {
+        if($login)
+        {
+            $select = DB::select('SELECT * FROM test WHERE login = :login', ['login' => $login]);
+            if(empty($select))
+            {
+                return 'Такого логина не существует, пройдите регистрацию';
+            }
+            elseif($select)
+            {
+                if($pass)
+                {
+                    $select = DB::select('SELECT * FROM test WHERE login = :login AND password = :pass', 
+                    ['login' => $login, 'pass' => $pass]);
+                    session(['user' => $login]);
+
+                    return "Привет, $login";
+                }
+                else 
+                {
+                    return 'Пароль неверный';
+                }
+            }
+        }
+    }
+
+    /**
+     * Получаем информацию о пользователе для личного кабинета ( а может и не только)
+     */
+    function getInfoAboutUser($login)
+    {
+        $select = DB::select('SELECT * FROM test WHERE login = :login', ['login' => $login]);
+        return $select;
+    }
+
 }

@@ -1,5 +1,9 @@
 /* Шапка */
 @import "header.css";
+/* Регистрация и авторизация */
+@import "RegAndAuth.css";
+/* Личный кабинет */
+@import "LC.css";
 /* Подвал */
 @import "footer.css";
 
@@ -22,4 +26,5 @@ body {
 .content {
     padding-left: 4%;
     min-height: 500px;
+    margin-top: 2%;
 }
