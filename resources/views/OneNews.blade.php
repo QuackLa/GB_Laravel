@@ -1,6 +1,5 @@
 @extends('main')
 
-
 @section('content')
 <div class="content">
     <h3>Новость номер {{ $id }}</h3>

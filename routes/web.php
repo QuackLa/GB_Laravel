@@ -5,7 +5,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\NewsController;
 
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,7 +15,6 @@ use App\Http\Controllers\NewsController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 
 /** Главная страница */
 Route::get('/', function() 
