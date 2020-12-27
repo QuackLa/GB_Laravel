@@ -1,0 +1,12 @@
+.RegForm button a {
+    text-decoration: none;
+    color: black;
+}
+
+.RegForm input {
+    display: block;
+}
+
+.submit {
+    margin-top: 0.5%;
+}
