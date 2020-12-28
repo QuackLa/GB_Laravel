@@ -13,9 +13,11 @@
     </tr>
     <tr>
     @foreach($info as $detail)
-        @foreach($detail as $all)
-        <td> {{ $all }} </td>
-        @endforeach
+        <td> {{ $detail->login }} </td>
+        <td> {{ $detail->password }} </td>
+        <td> {{ $detail->name }} </td>
+        <td> {{ $detail->surname }} </td>
+        <td> {{ $detail->email }} </td> 
     </tr>
     @endforeach
 </table>
