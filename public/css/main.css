@@ -2,6 +2,10 @@
 @import "header.css";
 /* Регистрация и авторизация */
 @import "RegAndAuth.css";
+/* Новости */
+@import "News.css";
+/* Админка новостей */
+@import "NewsAdmin.css";
 /* Личный кабинет */
 @import "LC.css";
 /* Подвал */

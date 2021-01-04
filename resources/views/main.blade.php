@@ -10,6 +10,8 @@
     <div class='container'>
     @if(session('user'))
         @include('headerForUsers')
+    @elseif(session('admin'))
+        @include('headerForAdmin')
     @else
         @include('header')
     @endif

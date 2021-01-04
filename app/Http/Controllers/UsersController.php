@@ -58,12 +58,20 @@ class UsersController extends Controller
         return redirect()->route('EnterUser', ['alarm' => $checkUser]);
     }
 
-    /** Личный кабинет пользователя */
+    /** Личный кабинет пользователя или админа */
     public function LC()
     {
         if(session('user'))
         {
             $info = $this->user->getInfoAboutUser(session('user'));
+            return view('LC', 
+            [
+                'info' => $info
+            ]);
+        }
+        elseif(session('admin'))
+        {
+            $info = $this->user->getInfoAboutUser(session('admin'));
             return view('LC', 
             [
                 'info' => $info
@@ -76,6 +84,7 @@ class UsersController extends Controller
     {
         //Auth::logout();
         session()->forget('user');
+        session()->forget('admin');
         return view('welcome');
     }
 

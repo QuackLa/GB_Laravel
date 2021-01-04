@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,7 @@ use App\Http\Controllers\NewsController;
 |
 */
 
+
 /** Главная страница */
 Route::get('/', function() 
     { 
@@ -23,16 +25,20 @@ Route::get('/', function()
     })
     ->name('main');
 
+/** --------------------------- Блок новостей ------------------------------------------------- */
 
-/** Блок новостей */
+/** Основная страница новостей */
 Route::get('/CatNews', [NewsController::class, 'CatNews'])
     ->name('CatNews');
 
-Route::get('/NewsByCat', [NewsController::class, 'NewsByCat'])
+/** Новости по категориям */
+Route::get('/NewsByCat/{id?}', [NewsController::class, 'NewsByCat'])
     ->name('NewsByCat');
 
 Route::get('/OneNews/{id?}', [NewsController::class, 'OneNews'])
     ->name('OneNews');
+
+/** --------------------------- Работа с пользователем ------------------------------------------------- */
 
 /** Вкладка 'Войти' */
 Route::get('/EnterUser/{alarm?}', [UsersController::class, 'EnterUser'])
@@ -56,4 +62,26 @@ Route::get('/LC', [UsersController::class, 'LC'])
 
 /** Выход пользователя */
 Route::get('/Logout', [UsersController::class, 'Logout'])
-    ->name('Logout');
+->name('Logout');
+
+
+/** ----------------------------- Админка --------------------------------------------- */
+
+/** Редактирование или удаление новости */
+Route::get('/Admin/{alarm?}', [AdminController::class, 'Admin'])
+    ->name('Admin');
+
+Route::post('/NewsEditOrDelete', [AdminController::class, 'NewsEditOrDelete'])
+    ->name('NewsEditOrDelete');
+
+/** Создание новостей и категорий */
+Route::get('/NewsCreate/{alarm?}', [AdminController::class, 'NewsCreate'])
+    ->name('NewsCreate');
+
+Route::post('/NewsCreatePOST', [AdminController::class, 'NewsCreatePOST'])
+    ->name('NewsCreatePOST');
+
+Route::post('/NewNewsCategory', [AdminController::class, 'NewNewsCategory'])
+    ->name('NewNewsCategory');
+
+

@@ -83,8 +83,32 @@ class User extends Authenticatable
     {
         if($login)
         {
-            $select = DB::select('SELECT * FROM test WHERE login = :login', ['login' => $login]);
-            if(empty($select))
+            // Обычного пользователя ищем
+            $select = DB::select('SELECT * FROM test WHERE login = :login AND user_status = :user_status', 
+            ['login' => $login, 'user_status' => 0]);
+            // Администратора ищем
+            $selectAdmins = DB::select('SELECT * FROM test WHERE login = :login AND user_status = :user_status', 
+            ['login' => $login, 'user_status' => 1]);
+
+            // Если админ с таким логином найден, то проверяем пароль и даём доступ
+            if($selectAdmins)
+            {
+                if($pass)
+                {
+                    $checkPassAdmin = DB::select('SELECT * FROM test WHERE login = :login AND password = :pass', 
+                    ['login' => $login, 'pass' => $pass]);
+                    session(['admin' => $login]);
+
+                    return "Привет администратор, $login";
+                }
+                else 
+                {
+                    return 'Пароль неверный';
+                }
+            }
+
+            // Аналогичная проверка для обычного пользователя
+            if(empty($select)) 
             {
                 return 'Такого логина не существует, пройдите регистрацию';
             }
