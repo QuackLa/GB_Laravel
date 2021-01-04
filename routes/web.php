@@ -84,3 +84,4 @@ Route::post('/NewsCreatePOST', [AdminController::class, 'NewsCreatePOST'])
 Route::post('/NewNewsCategory', [AdminController::class, 'NewNewsCategory'])
     ->name('NewNewsCategory');
 
+
