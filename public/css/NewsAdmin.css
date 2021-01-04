@@ -1,0 +1,15 @@
+.buttons {
+    margin-bottom: 5%;
+    margin-top: 1%;
+}
+
+textarea {
+    margin-top: 2%;
+}
+
+.block {
+    border: 1px solid black;
+    margin-bottom: 2%;
+    width: 90%;
+    padding: 2%;
+}
