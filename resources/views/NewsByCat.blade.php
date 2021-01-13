@@ -23,7 +23,7 @@
 
     </table>
 
-
+    @if($checkButton)
     <table>
 
         <tr><td>
@@ -38,7 +38,7 @@
         </td></tr>
 
     </table>
-
+    @endif
 
 </div>
 @endsection

@@ -7,6 +7,20 @@
     @if($alarm)
         <h3> {{ $alarm }} </h3>
     @endif
+    
+    @if ($errors->any())
+    <div class="alert alert-danger">
+            @foreach ($errors->all() as $error)
+                <h3>{{ $error }}</h3>
+            @endforeach
+    </div>
+    @endif
+
+    @if(session('success'))
+        <div class="alert alert-danger">
+            <h3> {{ session('success') }} </h3>
+        </div>
+    @endif
 
     <table>
 

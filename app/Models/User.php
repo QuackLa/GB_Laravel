@@ -18,9 +18,13 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'newlogin',
+        'newpass',
+        'newname',
+        'newsurname',
+        'newemail',
+        'login',
+        'pass',
     ];
 
     /**
@@ -44,7 +48,7 @@ class User extends Authenticatable
 
     
     /**
-     * Логика регистрации пользователя
+     * Регистрация пользователя
      * С проверкой, на существование вводимого логина
      */
     function registrNewUser($login, $pass, $name, $surname, $email)
@@ -55,25 +59,37 @@ class User extends Authenticatable
         }
         else 
         {
-            if($login)
-            {
-                $select = DB::select('SELECT * FROM test WHERE login = ?', [$login]);
-    
-                if(empty($select))
-                {
-                    $add = DB::insert('INSERT INTO `test` (`login`, `password`, `name`, `surname`, `email`) 
-                    values (:login, :password, :name, :surname, :email)',
-                    ['login' => $login, 'password' => $pass, 'name' => $name, 'surname' => $surname, 'email' => $email]);
-                    session(['user' => $login]);
-    
-                    return "Вы успешно вошли, $login. Добро пожаловать!";
-                }
-                else 
-                {
-                    return 'Такой пользователь уже существует';
-                }
-            }    
+            return $this->checkRegUser($login, $pass, $name, $surname, $email);
         }
+    }
+
+    /**
+     * Логика регистрации пользователя
+     */
+    function checkRegUser($login, $pass, $name, $surname, $email)
+    {
+        if($login)
+        {
+            $select = DB::table('test')->where('login', $login)->get()->toArray();
+   
+            if(!$select)
+            {
+                $add = DB::table('test')->insert([
+                    'login' => $login,
+                    'password' => $pass,
+                    'name' => $name,
+                    'surname' => $surname,
+                    'email' => $email
+                ]);
+            
+                session(['user' => $login]);
+                return "Вы успешно вошли, $login. Добро пожаловать!";
+            }
+            else 
+            {
+                return 'Такой пользователь уже существует';
+            }
+        }    
     }
 
     /**
@@ -84,59 +100,75 @@ class User extends Authenticatable
         if($login)
         {
             // Обычного пользователя ищем
-            $select = DB::select('SELECT * FROM test WHERE login = :login AND user_status = :user_status', 
-            ['login' => $login, 'user_status' => 0]);
+            $select = DB::table('test')->where('login', $login)->where('user_status', 0)->get()->toArray();
             // Администратора ищем
-            $selectAdmins = DB::select('SELECT * FROM test WHERE login = :login AND user_status = :user_status', 
-            ['login' => $login, 'user_status' => 1]);
+            $selectAdmins = DB::table('test')->where('login', $login)->where('user_status', 1)->get()->toArray();
 
-            // Если админ с таким логином найден, то проверяем пароль и даём доступ
-            if($selectAdmins)
+            if($select)
             {
-                if($pass)
-                {
-                    $checkPassAdmin = DB::select('SELECT * FROM test WHERE login = :login AND password = :pass', 
-                    ['login' => $login, 'pass' => $pass]);
-                    session(['admin' => $login]);
-
-                    return "Привет администратор, $login";
-                }
-                else 
-                {
-                    return 'Пароль неверный';
-                }
+                return $this->checkAuthUser($login, $pass);
             }
-
-            // Аналогичная проверка для обычного пользователя
-            if(empty($select)) 
+            elseif($selectAdmins)
+            {
+                return $this->checkAuthAdmin($login, $pass);
+            }
+            else
             {
                 return 'Такого логина не существует, пройдите регистрацию';
-            }
-            elseif($select)
-            {
-                if($pass)
-                {
-                    $select = DB::select('SELECT * FROM test WHERE login = :login AND password = :pass', 
-                    ['login' => $login, 'pass' => $pass]);
-                    session(['user' => $login]);
-
-                    return "Привет, $login";
-                }
-                else 
-                {
-                    return 'Пароль неверный';
-                }
             }
         }
     }
 
     /**
-     * Получаем информацию о пользователе для личного кабинета ( а может и не только)
+     * Логика проверки пользователя при авторизации
      */
-    function getInfoAboutUser($login)
+    function checkAuthUser($login, $pass)
     {
-        $select = DB::select('SELECT * FROM test WHERE login = :login', ['login' => $login]);
-        return $select;
+        if($pass)
+        {
+            $select = DB::table('test')->where('login', $login)->where('password', $pass)->get();
+            session(['user' => $login]);
+            return "Привет, $login";
+        }
+        else 
+        {
+            return 'Пароль неверный';
+        }
+    }
+
+    /**
+     * Логика проверки администратора при авторизации
+     */
+    function checkAuthAdmin($login, $pass)
+    {
+        if($pass)
+        {
+            $checkPassAdmin = DB::table('test')->where('login', $login)->where('password', $pass)->get();
+            session(['admin' => $login]);
+            return "Привет администратор, $login";
+        }
+        else 
+        {
+            return 'Пароль неверный';
+        }
+    }
+
+    /**
+     * Получаем информацию о пользователе для личного кабинета ( а может и не только)
+     * Проверку делаем по сессии, session('user') и session('admin')
+     */
+    function getInfoAboutUser($login = false, $admin = false)
+    {
+        if($login)
+        {
+            $select = DB::table('test')->where('login', $login)->get();
+            return $select;
+        }
+        elseif($admin)
+        {
+            $select = DB::table('test')->where('login', $admin)->get();
+            return $select;
+        }
     }
 
 }

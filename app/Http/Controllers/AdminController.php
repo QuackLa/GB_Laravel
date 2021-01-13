@@ -2,63 +2,68 @@
 
 namespace App\Http\Controllers;
 
-//use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\News;
-use Request;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\MyRequest;
 
-class AdminController
+class AdminController extends Controller
 {
-    // Для объекта модели админки
-    protected $adminModel;
-    // Для объекта модели новостей
-    protected $newsModel;
 
-    function __construct()
+    protected $adminModel; // Для объекта модели админки
+    protected $newsModel; // Для объекта модели новостей
+
+    function __construct(Request $request)
     {
         $this->adminModel = new Admin;
         $this->newsModel = new News;
+        $this->adminModel->fill($request->all());
     }
 
-    // Основаная страница для админа
+    /**
+     * Основаная страница для админа
+     */
     public function Admin($alarm = false)
     {
         $news = $this->newsModel->renderAllNews();
         return view('Admin',['news' => $news, 'alarm' => $alarm]);
     }
-
-    // Страничка создания новости
+  
+    /**
+     * Страничка создания новости
+     */
     public function NewsCreate($alarm = false)
     {
-        $category = $this->adminModel->ByCategory();
+        $category = $this->newsModel->onlyCategory();
         return view('AdminCreateNews', ['alarm' => $alarm, 'tableCategory' => $category]);
     }
 
-    // Обработка создания новостей
-    public function NewsCreatePOST()
+    /**
+     * Обработка создания новостей
+     */
+    public function NewsCreatePOST(MyRequest $request)
     {
-        $text = Request::input('text');
-        $nameOfCategory = Request::input('category_id');
-        $create = $this->adminModel->createThisNews($text, $nameOfCategory);
-        return redirect()->route('NewsCreate',['alarm' => $create]);
+        $create = $this->adminModel->createThisNews($this->adminModel->text, $this->adminModel->category_id);
+        return redirect()->route('NewsCreate')->with('success', 'Новость успешно добавлена');
     }
 
-    // Обработка создания категорий новостей
+    /**
+     * Обработка создания категорий новостей
+     */
     public function NewNewsCategory()
     {
-        $category = Request::input('newCategory');
-        $create = $this->adminModel->createNewsCategory($category);
-        return redirect()->route('NewsCreate',['alarm' => $create]);
+        $create = $this->adminModel->createNewsCategory($this->adminModel->newCategory);
+        return redirect()->route('NewsCreate', ['alarm' => $create]);
     }
 
-    // Редактирование и удаление новостей
+    /**
+     * Редактирование и удаление новостей
+     */
     public function NewsEditOrDelete()
     {
-        $id = Request::input('id');
-        $text = Request::input('text');
-        $typeButton = Request::input('submit');
-
-        $editDelete = $this->adminModel->editThisNewsOrDelete($id, $text, $typeButton);
+        $model = $this->adminModel;
+        $editDelete = $model->editThisNewsOrDelete($model->id, $model->text, $model->submit);
         return redirect()->route('Admin',['alarm' => $editDelete]);
     }
 

@@ -7,31 +7,38 @@ use App\Models\News;
 
 class NewsController extends Controller
 {
-    // Для объекта модели новостей
-    protected $model;
 
-    function __construct()
+    protected $model; // Для объекта модели новостей
+
+    function __construct(Request $request)
     {
         $this->model = new News;
+        $this->model->fill($request->all());
     }
 
-    // Выводим все новости
+    /**
+     * Выводим все новости
+     */
     public function CatNews()
     {
         $news = $this->model->renderAllNews();
         return view('CatNews', ['news' => $news]);
     }
 
-    // Новости по категориям
-    public function NewsByCat(Request $request, $id = false)
+    /**
+     * Новости по категориям
+     */
+    public function NewsByCat()
     {
-        $id = $request->get('choseCategory');
+        $checkButton = $this->model->choseCategory;
         $category = $this->model->onlyCategory();
-        $news = $this->model->renderNewsByCat($id);
-        return view('NewsByCat', ['cat' => $category, 'news' => $news]);
+        $news = $this->model->renderNewsByCat($checkButton);
+        return view('NewsByCat', ['cat' => $category, 'news' => $news, 'checkButton' => $checkButton]);
     }
 
-    // Вывод одной выбранной новости
+    /**
+     * Вывод одной выбранной новости
+     */
     public function OneNews($id = false)
     {
         return view('OneNews', ['id' => $id]);

@@ -4,36 +4,90 @@ namespace App\Models;
 
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
-class Admin extends Authenticatable
+class Admin extends Model
 {
+   
+     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'id',
+        'text',
+        'submit',
+        'newCategory',
+        'category_id'
+    ];
 
-    // Логика добавления новости
+
+    /**
+     * Логика добавления новости
+     */
     function createThisNews($text, $category)
     {
-        $add = DB::insert('INSERT INTO news (`body`, `category_id`, `created_at`) VALUES (:text , :category, :now)',
-        ['text' => $text, 'category' => $category, 'now' => Carbon::now()]);
-        return 'Новость успешно добавлена';
+        if($text && $category)
+        {
+            $add = DB::table('news')
+            ->insert([
+                'body' => $text,
+                'category_id' => $category,
+                'created_at' => Carbon::now()
+            ]);
+
+            return 'Новость успешно добавлена';
+        }
+        elseif(!$text)
+        {
+            return 'Новость не может быть пустой';
+        }
+        elseif(!$category)
+        {
+            return 'Не выбрана категория для новой новости';
+        }
     }  
 
-
-    // Логика создания категории
+    /**
+     * Логика создания категории
+     */
     function createNewsCategory($name)
     {
-        $newCategory = DB::insert('INSERT INTO news_category (`name`, `created_at`) VALUES (:name, :now)',
-        ['name' => $name, 'now' => Carbon::now()]);
-        return 'Категория успешно добавлена';
+        // Проверяем, нет ли уже созданной категории с выбранным названием
+        $select = DB::table('news_category')->where('name', $name)->get()->toArray();
+
+        if(!$select) // Если такой категории ещё нет, то создаём её
+        {
+            $newCategory = DB::table('news_category')
+                ->insert([
+                    'name' => $name,
+                    'created_at' => Carbon::now()
+                ]);
+
+            return 'Категория успешно добавлена';
+        }
+        else
+        {
+            return 'Категория с таким названием уже существует';
+        }
     }
 
+    /**
+     * Логика изменения или удаления новости
+     */
 
-    // Логика изменения или удаления новости
     function editThisNewsOrDelete($id, $text, $typeButton)
     {
         if($typeButton == 'edit' && $text && $id)
         {
-            $editNews = DB::update('UPDATE news SET body = :body, updated_at = :update WHERE id = :id',
-            ['body' => $text, 'update' => Carbon::now(), 'id' => $id]);
+            $editNews = DB::table('news')->where('id', $id)
+                ->update([
+                    'body' => $text,
+                    'updated_at' => Carbon::now(),
+                    'id' => $id
+                ]);
+
             return 'Новость успешно обновлена';
         }
         elseif($typeButton == 'edit' && !$id && $text)
@@ -54,14 +108,14 @@ class Admin extends Authenticatable
         }
     }
 
-
-    // Отдельно логика удаления новости
+    /**
+     * Отдельно логика удаления новости
+     */
     function deleteThisNews($id)
     {
         if($id)
         {
-            $deleteNews = DB::delete('DELETE FROM news WHERE id = :id' ,
-            ['id' => $id]);
+            $deleteNews = DB::table('news')->where('id', $id)->delete();
             return 'Удаление новости прошло успешно';
         }
         else 
@@ -69,14 +123,5 @@ class Admin extends Authenticatable
             return 'Не выбрана новость для удаления';
         }
     }
-
-
-    // Выгрузка категорий новостей
-    function ByCategory()
-    {
-        $select = DB::select('SELECT * FROM news_category', []);
-        return $select;
-    }
-
 
 }

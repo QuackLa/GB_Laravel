@@ -4,85 +4,77 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
 
+    protected $user; // Для объекта модели
 
-    /**
-     * Для объекта модели
-     */
-    protected $user;
-
-    function __construct()
+    function __construct(Request $request)
     {
         $this->user = new User;
+        $this->user->fill($request->all());
     }
 
     /**
      * Форма для входа пользователя. С возможностью перехода в регистрацию.
-     * Так же сообщения об успехе или неудачи этих действий.
+     * Сюда же выводим сообщения об успехе или неудачи этих действий.
      */
     public function EnterUser($alarm = false)
     {
         return view('Auth',['alarm' => $alarm]);
     }
 
-    /** Форима для регистрации */
+    /**
+     * Форима для регистрации 
+     */
     public function WannaReg($alarm = false)
     {
         return view('RegUser',['alarm' => $alarm]);
     }
 
-    /** Регистрация пользователя с отправкой результатов во вьюшку с помощью редиректа */
-    public function RegUser(Request $request)
+    /** 
+     * Регистрация пользователя с отправкой результатов во вьюшку с помощью редиректа
+     */
+    public function RegUser()
     {
-        $login = $request->input('newlogin');
-        $pass = $request->input('newpass');
-        $name = $request->input('newname');
-        $surname = $request->input('newsurname');
-        $email = $request->input('newemail');
-
-        $addUser = $this->user->registrNewUser($login,$pass,$name,$surname,$email);
+        $model = $this->user;
+        $addUser = $model->registrNewUser(
+            $model->newlogin, 
+            $model->newpass, 
+            $model->newname,
+            $model->newsurname,
+            $model->newemail
+        );
         return redirect()->route('EnterUser', ['alarm' => $addUser]);
     }
 
-    /** Авторизация пользователя с отправкой результатов во вьюшку с помощью редиректа */
-    public function AuthUser(Request $request)
+    /**
+     * Авторизация пользователя с отправкой результатов во вьюшку с помощью редиректа
+     */
+    public function AuthUser()
     {
-        $login = $request->input('login');
-        $pass = $request->input('pass');
-
-        $checkUser = $this->user->Auth($login, $pass);
+        $checkUser = $this->user->Auth($this->user->login, $this->user->pass);
         return redirect()->route('EnterUser', ['alarm' => $checkUser]);
     }
 
-    /** Личный кабинет пользователя или админа */
+    /** 
+     * Личный кабинет пользователя или админа
+     */
     public function LC()
     {
-        if(session('user'))
-        {
-            $info = $this->user->getInfoAboutUser(session('user'));
-            return view('LC', 
-            [
-                'info' => $info
-            ]);
-        }
-        elseif(session('admin'))
-        {
-            $info = $this->user->getInfoAboutUser(session('admin'));
-            return view('LC', 
-            [
-                'info' => $info
-            ]);
-        }
+        $login = session('user');
+        $admin = session('admin');
+
+        $info = $this->user->getInfoAboutUser($login, $admin);
+        return view('LC', ['info' => $info]);
     }
 
-    /** Пользователь выходит с сайта */
+    /**
+     * Пользователь выходит с сайта 
+     */
     public function Logout()
     {
-        //Auth::logout();
         session()->forget('user');
         session()->forget('admin');
         return view('welcome');

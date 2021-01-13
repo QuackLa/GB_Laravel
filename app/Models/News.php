@@ -3,31 +3,46 @@
 namespace App\Models;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
-class News extends Authenticatable
+class News extends Model
 {
 
-    // Выборка всех новостей
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'choseCategory',
+    ];
+
+
+    /**
+     * Выборка всех новостей
+     */
     function renderAllNews()
     {
-        $select = DB::select('SELECT * FROM news' , []);
+        $select = static::query()->get();
         return $select;
     }
 
-    // Выборка новостей по категориям
+    /**
+     * Выборка новостей по категориям
+     */
     function renderNewsByCat($idByCat)
     {
-        $select = DB::select('SELECT * FROM news JOIN news_category ON category_id = news_category.id WHERE category_id = :id', 
-        ['id' => $idByCat]);
+        $select = static::query()->where('category_id', $idByCat )->get();
         return $select;
     }
 
-    // Выгрузка категорий новостей
+    /**
+     * Выгрузка категорий новостей
+     */
     function onlyCategory()
     {
-        $select = DB::select('SELECT * FROM news_category', []);
+        $select = DB::table('news_category')->get();
         return $select;
     }
-
+    
 }
