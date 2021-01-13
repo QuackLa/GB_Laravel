@@ -5,7 +5,7 @@
     <h3> Последние новости </h3>
 
     <table>
-
+    
     <tr><td>
     @foreach($news as $oneNews)
     <div class="NewsBlock">

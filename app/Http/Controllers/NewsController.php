@@ -7,7 +7,7 @@ use App\Models\News;
 
 class NewsController extends Controller
 {
-    
+
     protected $model; // Для объекта модели новостей
 
     function __construct(Request $request)
@@ -32,7 +32,7 @@ class NewsController extends Controller
     {
         $checkButton = $this->model->choseCategory;
         $category = $this->model->onlyCategory();
-        $news = $this->model->renderNewsByCat($this->model->choseCategory);
+        $news = $this->model->renderNewsByCat($checkButton);
         return view('NewsByCat', ['cat' => $category, 'news' => $news, 'checkButton' => $checkButton]);
     }
 

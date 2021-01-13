@@ -7,7 +7,6 @@ use App\Models\News;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyRequest;
-use App;
 
 class AdminController extends Controller
 {
@@ -30,7 +29,7 @@ class AdminController extends Controller
         $news = $this->newsModel->renderAllNews();
         return view('Admin',['news' => $news, 'alarm' => $alarm]);
     }
-
+  
     /**
      * Страничка создания новости
      */
@@ -45,7 +44,6 @@ class AdminController extends Controller
      */
     public function NewsCreatePOST(MyRequest $request)
     {
-        App::setLocale('ru');
         $create = $this->adminModel->createThisNews($this->adminModel->text, $this->adminModel->category_id);
         return redirect()->route('NewsCreate')->with('success', 'Новость успешно добавлена');
     }

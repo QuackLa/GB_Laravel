@@ -76,6 +76,7 @@ class Admin extends Model
     /**
      * Логика изменения или удаления новости
      */
+
     function editThisNewsOrDelete($id, $text, $typeButton)
     {
         if($typeButton == 'edit' && $text && $id)
